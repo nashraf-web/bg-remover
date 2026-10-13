@@ -103,6 +103,17 @@
   };
 })();
 </script>
+<script>
+// iOS Safari polyfill: prevent ORT WASM crash on missing SharedArrayBuffer
+if (typeof globalThis.SharedArrayBuffer === 'undefined') {
+  try {
+    new WebAssembly.Memory({initial:0, maximum:0, shared:true});
+  } catch(e) {
+    globalThis.SharedArrayBuffer = ArrayBuffer;
+    console.log('[VeilCut] SharedArrayBuffer polyfilled for iOS Safari');
+  }
+}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.29.0/dist/ort.all.min.js" onload="window.__ortRuntimeBootstrap.primaryLoaded()" onerror="window.__ortRuntimeBootstrap.primaryFailed()"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
