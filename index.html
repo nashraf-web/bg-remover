@@ -51,9 +51,9 @@
 <script>
 (function(){
   'use strict';
-  var PRIMARY='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.29.0/dist/ort.all.min.js';
-  var FALLBACK='https://unpkg.com/onnxruntime-web@1.29.0/dist/ort.all.min.js';
-  var LOCAL='./assets/ort/ort.all.min.js';
+  var PRIMARY='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.29.0/dist/ort.wasm.min.js';
+  var FALLBACK='https://unpkg.com/onnxruntime-web@1.29.0/dist/ort.wasm.min.js';
+  var LOCAL='./assets/ort/ort.wasm.min.js';
   var resolveAttempt,attemptPromise;
 
   function newAttempt(){attemptPromise=new Promise(function(resolve){resolveAttempt=resolve});return attemptPromise}
@@ -114,7 +114,7 @@ if (typeof globalThis.SharedArrayBuffer === 'undefined') {
   }
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.29.0/dist/ort.all.min.js" onload="window.__ortRuntimeBootstrap.primaryLoaded()" onerror="window.__ortRuntimeBootstrap.primaryFailed()"></script>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.29.0/dist/ort.wasm.min.js" onload="window.__ortRuntimeBootstrap.primaryLoaded()" onerror="window.__ortRuntimeBootstrap.primaryFailed()"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
 (function(){
