@@ -35,16 +35,18 @@
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this background remover really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The Free plan removes backgrounds from 150 images per month at no cost, with no signup required."}},{"@type":"Question","name":"Are my images uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The planned tool processes images on your device, inside your browser, so your original files do not need to leave your device."}},{"@type":"Question","name":"Does it work on phones and tablets?","acceptedAnswer":{"@type":"Answer","text":"Yes. The interface is designed for modern mobile, tablet, and desktop browsers."}},{"@type":"Question","name":"What image formats are supported?","acceptedAnswer":{"@type":"Answer","text":"The planned launch supports JPG, PNG, and WebP images, with transparent PNG output."}},{"@type":"Question","name":"What is included in Pro?","acceptedAnswer":{"@type":"Answer","text":"Pro is planned at $5 per month and adds batches of 500 or more images, priority processing, and reusable background templates."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No account is required for the Free plan. Open the tool, choose an image, and remove its background."}}]}</script>
 <script>
-// Register Service Worker for COOP/COEP headers (iOS Safari fix)
-if ('serviceWorker' in navigator && location.protocol === 'https:') {
-  navigator.serviceWorker.register('/sw.js').then((reg) => {
-    console.log('[VeilCut] SW registered');
-    // Reload once after SW activates to get crossOriginIsolated=true
-    if (!sessionStorage.getItem('veilcut_sw_reloaded')) {
-      sessionStorage.setItem('veilcut_sw_reloaded', '1');
-      setTimeout(() => location.reload(), 1000);
-    }
-  }).catch((e) => console.log('[VeilCut] SW failed:', e));
+// Service Worker DISABLED (2026-10-14): The COOP/COEP header injection via SW
+// was breaking ES module imports ("Importing a module script failed").
+// GitHub Pages cannot send real COOP/COEP headers, so crossOriginIsolated
+// is not achievable here. ORT runs in fallback mode without SW.
+// if ('serviceWorker' in navigator && location.protocol === 'https:') {
+//   navigator.serviceWorker.register('/sw.js');
+// }
+if ('serviceWorker' in navigator) {
+  // Unregister any previously installed SW that may be cached
+  navigator.serviceWorker.getRegistrations().then(function(regs) {
+    for (var i = 0; i < regs.length; i++) { regs[i].unregister(); }
+  });
 }
 </script>
 </head>
