@@ -34,6 +34,19 @@
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this background remover really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The Free plan removes backgrounds from 150 images per month at no cost, with no signup required."}},{"@type":"Question","name":"Are my images uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The planned tool processes images on your device, inside your browser, so your original files do not need to leave your device."}},{"@type":"Question","name":"Does it work on phones and tablets?","acceptedAnswer":{"@type":"Answer","text":"Yes. The interface is designed for modern mobile, tablet, and desktop browsers."}},{"@type":"Question","name":"What image formats are supported?","acceptedAnswer":{"@type":"Answer","text":"The planned launch supports JPG, PNG, and WebP images, with transparent PNG output."}},{"@type":"Question","name":"What is included in Pro?","acceptedAnswer":{"@type":"Answer","text":"Pro is planned at $5 per month and adds batches of 500 or more images, priority processing, and reusable background templates."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No account is required for the Free plan. Open the tool, choose an image, and remove its background."}}]}</script>
+<script>
+// Register Service Worker for COOP/COEP headers (iOS Safari fix)
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register('/sw.js').then((reg) => {
+    console.log('[VeilCut] SW registered');
+    // Reload once after SW activates to get crossOriginIsolated=true
+    if (!sessionStorage.getItem('veilcut_sw_reloaded')) {
+      sessionStorage.setItem('veilcut_sw_reloaded', '1');
+      setTimeout(() => location.reload(), 1000);
+    }
+  }).catch((e) => console.log('[VeilCut] SW failed:', e));
+}
+</script>
 </head>
 <body>
 <header class="wrap nav" aria-label="Primary navigation"><div class="nav-note"><span class="footer-dot"></span><strong>VeilCut</strong> <span aria-hidden="true">by</span> CloudEmythos Browser-native AI</div><nav class="nav-links" aria-label="Page sections"><a href="#demo">Demo</a><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></nav></header>
@@ -253,7 +266,7 @@ if (typeof globalThis.SharedArrayBuffer === 'undefined') {
     try{
       var bytes=await downloadModel(MODEL_URL,function(loaded,total){if(progress){progress({stage:'download',loaded:loaded,total:total,backend:'WASM'})}});
       if(progress){progress({stage:'model-start',backend:'WASM'})}
-      session=await window.ort.InferenceSession.create(bytes,{executionProviders:['wasm']});
+      session=await window.ort.InferenceSession.create(bytes,{executionProviders:['wasm'],enableCpuMemArena:false});
       MODEL_SIZE=512;MODEL_NAME='BiRefNet-lite';
       console.log('[VeilCut] Using primary model: BiRefNet-lite (512x512)');
     }catch(primaryError){
@@ -263,7 +276,7 @@ if (typeof globalThis.SharedArrayBuffer === 'undefined') {
       if(progress){progress({stage:'download-start',backend:'WASM'})}
       var fallbackBytes=await downloadModel(FALLBACK_MODEL_URL,function(loaded,total){if(progress){progress({stage:'download',loaded:loaded,total:total,backend:'WASM'})}});
       if(progress){progress({stage:'model-start',backend:'WASM'})}
-      session=await window.ort.InferenceSession.create(fallbackBytes,{executionProviders:['wasm']});
+      session=await window.ort.InferenceSession.create(fallbackBytes,{executionProviders:['wasm'],enableCpuMemArena:false});
       MODEL_SIZE=320;MODEL_NAME='u2netp';
       console.log('[VeilCut] Using fallback model: u2netp (320x320, lightweight)');
     }
